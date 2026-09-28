@@ -1,5 +1,6 @@
 'use client';
 import Logo from '@/components/Logo';
+import { useTheme } from '@/components/ThemeProvider';
 import ThemeToggle from '@/components/ThemeToggle';
 import axios from 'axios';
 import Link from 'next/link';
@@ -10,11 +11,20 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const { theme } = useTheme();
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     if (loading) return;
+
     e.preventDefault();
     setLoading(true);
+
+    const toastStyle = {
+      background: theme === 'dark' ? '#18181b' : '#ffffff',
+      color: theme === 'dark' ? '#ffffff' : '#18181b',
+      border: `1px solid ${theme === 'dark' ? '#3f3f46' : '#e4e4e7'}`,
+    };
+
     try {
       await axios.post('/api/auth/register', {
         email,
@@ -22,32 +32,24 @@ export default function Home() {
       });
 
       toast('Daftar Berhasil', {
-        style: {
-          background: '#9810fa',
-          color: 'white',
-        },
+        style: toastStyle,
       });
       setEmail('');
       setPassword('');
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         toast(error.response?.data.error || 'Something went wrong', {
-          style: {
-            background: '#9810fa',
-            color: 'white',
-          },
+          style: toastStyle,
         });
       } else {
         toast('Network error please try again', {
-          style: {
-            background: '#9810fa',
-            color: 'white',
-          },
+          style: toastStyle,
         });
       }
     }
     setLoading(false);
   };
+
   return (
     <main
       className='flex min-h-screen flex-col items-center justify-center gap-8 px-4'
