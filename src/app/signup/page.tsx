@@ -17,7 +17,7 @@ export default function Home() {
         className='w-full max-w-sm rounded-2xl border p-6'
         style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-panel)' }}
       >
-        <h1 className='mb-4 text-lg font-bold'>Masuk</h1>
+        <h1 className='mb-4 text-lg font-bold'>Daftar</h1>
 
         <label className='mb-1 block text-sm font-medium'>Email</label>
         <input
@@ -42,13 +42,13 @@ export default function Home() {
           className='w-full rounded-lg py-2 text-sm font-semibold transition-opacity disabled:opacity-60'
           style={{ backgroundColor: 'var(--text)', color: 'var(--bg)' }}
         >
-          Masuk
+          Daftar
         </button>
 
         <p className='mt-4 text-center text-xs' style={{ color: 'var(--text-secondary)' }}>
-          Belum punya akun?{' '}
-          <Link href='/signup' className='font-semibold underline'>
-            Daftar
+          Sudah punya akun?{' '}
+          <Link href='/' className='font-semibold underline'>
+            Masuk
           </Link>
         </p>
       </form>
