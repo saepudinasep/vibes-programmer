@@ -1,8 +1,53 @@
+'use client';
 import Logo from '@/components/Logo';
 import ThemeToggle from '@/components/ThemeToggle';
+import axios from 'axios';
 import Link from 'next/link';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function Home() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    if (loading) return;
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axios.post('/api/auth/register', {
+        email,
+        password,
+      });
+
+      toast('Daftar Berhasil', {
+        style: {
+          background: '#9810fa',
+          color: 'white',
+        },
+      });
+      setEmail('');
+      setPassword('');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast(error.response?.data.error || 'Something went wrong', {
+          style: {
+            background: '#9810fa',
+            color: 'white',
+          },
+        });
+      } else {
+        toast('Network error please try again', {
+          style: {
+            background: '#9810fa',
+            color: 'white',
+          },
+        });
+      }
+    }
+    setLoading(false);
+  };
   return (
     <main
       className='flex min-h-screen flex-col items-center justify-center gap-8 px-4'
@@ -14,6 +59,7 @@ export default function Home() {
 
       <Logo size='lg' />
       <form
+        onSubmit={handleSignup}
         className='w-full max-w-sm rounded-2xl border p-6'
         style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-panel)' }}
       >
@@ -21,6 +67,8 @@ export default function Home() {
 
         <label className='mb-1 block text-sm font-medium'>Email</label>
         <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           type='email'
           required
           placeholder='andi@contoh.id'
@@ -30,6 +78,8 @@ export default function Home() {
 
         <label className='mb-1 block text-sm font-medium'>Password</label>
         <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           type='password'
           required
           placeholder='••••••••'
@@ -42,7 +92,7 @@ export default function Home() {
           className='w-full rounded-lg py-2 text-sm font-semibold transition-opacity disabled:opacity-60'
           style={{ backgroundColor: 'var(--text)', color: 'var(--bg)' }}
         >
-          Daftar
+          {loading ? 'Mendaftar...' : 'Daftar'}
         </button>
 
         <p className='mt-4 text-center text-xs' style={{ color: 'var(--text-secondary)' }}>

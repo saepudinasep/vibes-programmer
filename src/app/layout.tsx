@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Nunito } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { ToastContainer } from 'react-toastify';
 
 const nunito = Nunito({ subsets: ['latin'], variable: '--font-nunito' });
 
@@ -14,7 +15,15 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang='id'>
       <body className={`${nunito.variable} font-sans`}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          <ToastContainer
+            position='top-center'
+            theme='dark'
+            hideProgressBar={true}
+            autoClose={3000}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );
