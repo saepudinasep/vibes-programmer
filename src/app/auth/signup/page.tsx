@@ -3,7 +3,9 @@ import Logo from '@/components/Logo';
 import { useTheme } from '@/components/ThemeProvider';
 import ThemeToggle from '@/components/ThemeToggle';
 import axios from 'axios';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -12,6 +14,7 @@ export default function Home() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { theme } = useTheme();
+  const router = useRouter();
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     if (loading) return;
@@ -34,8 +37,19 @@ export default function Home() {
       toast('Daftar Berhasil', {
         style: toastStyle,
       });
-      setEmail('');
-      setPassword('');
+      // immediately signin the user
+      const loginRes = await signIn('credentials', {
+        email,
+        password,
+      });
+
+      if (loginRes?.error) {
+        router.replace('/');
+      } else {
+        router.replace('/auth/setup-profile');
+      }
+      // setEmail('');
+      // setPassword('');
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         toast(error.response?.data.error || 'Something went wrong', {

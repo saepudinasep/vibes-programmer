@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang='id'>
+    <html lang='id' suppressHydrationWarning>
       <body className={`${nunito.variable} font-sans`}>
         <ThemeProvider>
           {children}
