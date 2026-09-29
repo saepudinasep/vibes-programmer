@@ -1,5 +1,5 @@
 // Skrip untuk membuat akun sampel supaya bisa langsung dites (syarat pengumpulan #2).
-// Jalankan dengan: node scripts/seed.mjs
+// Jalankan dengan: npx tsx scripts/seed.ts
 // Pastikan MONGODB_URI sudah diset di .env.local atau environment.
 
 import mongoose from 'mongoose';
