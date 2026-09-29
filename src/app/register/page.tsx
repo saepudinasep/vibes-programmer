@@ -6,32 +6,38 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import ThemeToggle from '@/components/ThemeToggle';
+import { useToast } from '@/components/ToastProvider';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [form, setForm] = useState({ name: '', email: '', password: '' });
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError('');
     setLoading(true);
 
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-    setLoading(false);
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
 
-    if (!res.ok) {
-      setError(data.error || 'Gagal mendaftar');
-      return;
+      if (!res.ok) {
+        showToast(data.error || 'Gagal mendaftar', 'error');
+        return;
+      }
+
+      showToast('Akun berhasil dibuat. Silakan masuk.', 'success');
+      router.push('/login');
+    } catch {
+      showToast('Gagal mendaftar. Periksa koneksi lalu coba lagi.', 'error');
+    } finally {
+      setLoading(false);
     }
-
-    router.push('/login');
   }
 
   return (
@@ -81,15 +87,6 @@ export default function RegisterPage() {
           className='mb-3 w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none'
           style={{ borderColor: 'var(--border)' }}
         />
-
-        {error && (
-          <p
-            className='mb-3 rounded-lg border px-3 py-2 text-xs'
-            style={{ borderColor: '#e0c34a', backgroundColor: '#fdf6df', color: '#7a5b00' }}
-          >
-            {error}
-          </p>
-        )}
 
         <button
           type='submit'

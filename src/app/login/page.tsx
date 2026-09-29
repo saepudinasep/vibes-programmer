@@ -7,33 +7,39 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import ThemeToggle from '@/components/ThemeToggle';
+import { useToast } from '@/components/ToastProvider';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError('');
     setLoading(true);
 
-    const res = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const res = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
 
-    setLoading(false);
+      if (res?.error) {
+        showToast('Email atau password salah', 'error');
+        return;
+      }
 
-    if (res?.error) {
-      setError('Email atau password salah');
-      return;
+      showToast('Berhasil masuk', 'success');
+      router.push('/chat');
+      router.refresh();
+    } catch {
+      showToast('Gagal masuk. Periksa koneksi lalu coba lagi.', 'error');
+    } finally {
+      setLoading(false);
     }
-    router.push('/chat');
-    router.refresh();
   }
 
   return (
@@ -75,15 +81,6 @@ export default function LoginPage() {
           className='mb-3 w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none'
           style={{ borderColor: 'var(--border)' }}
         />
-
-        {error && (
-          <p
-            className='mb-3 rounded-lg border px-3 py-2 text-xs'
-            style={{ borderColor: '#e0c34a', backgroundColor: '#fdf6df', color: '#7a5b00' }}
-          >
-            {error}
-          </p>
-        )}
 
         <button
           type='submit'
