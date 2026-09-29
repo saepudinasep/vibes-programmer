@@ -3,13 +3,17 @@
 import Image from 'next/image';
 import { useTheme } from './ThemeProvider';
 
-export default function Logo({ size = 'md' }) {
+interface LogoProps {
+  size?: 'md' | 'lg';
+}
+
+export default function Logo({ size = 'md' }: LogoProps) {
   const { theme } = useTheme();
 
   const logoSrc =
     theme === 'dark' ? '/assets/images/white-logo.png' : '/assets/images/dark-logo.png';
 
-  const dimensions = size === 'lg' ? { width: 180, height: 50 } : { width: 140, height: 40 };
+  const dimensions = size === 'lg' ? { width: 75, height: 75 } : { width: 75, height: 50 };
 
   return (
     <Image

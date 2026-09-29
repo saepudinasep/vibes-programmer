@@ -1,5 +1,13 @@
-import React from 'react';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import ChatApp from '@/components/ChatApp';
+import { authOptions } from '../../../lib/auth';
 
-export default function page() {
-  return <div className='text-2xl text-white'>Chat Page</div>;
+export default async function ChatPage() {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    redirect('/login');
+  }
+
+  return <ChatApp currentUser={session.user} />;
 }

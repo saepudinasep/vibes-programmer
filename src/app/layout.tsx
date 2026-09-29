@@ -1,29 +1,23 @@
-import type { Metadata } from 'next';
 import { Nunito } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import { ToastContainer } from 'react-toastify';
+import SessionProviderWrapper from '@/components/SessionProviderWrapper';
+import type { ReactNode } from 'react';
 
 const nunito = Nunito({ subsets: ['latin'], variable: '--font-nunito' });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Akselera.Tech - Chat Internal',
   description: 'Aplikasi chat internal Akselera.Tech',
 };
 
-export default function RootLayout({ children }: LayoutProps<'/'>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang='id' suppressHydrationWarning>
       <body className={`${nunito.variable} font-sans`}>
-        <ThemeProvider>
-          {children}
-          <ToastContainer
-            position='top-center'
-            theme='dark'
-            hideProgressBar={true}
-            autoClose={3000}
-          />
-        </ThemeProvider>
+        <SessionProviderWrapper>
+          <ThemeProvider>{children}</ThemeProvider>
+        </SessionProviderWrapper>
       </body>
     </html>
   );
